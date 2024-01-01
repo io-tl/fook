@@ -34,7 +34,7 @@ p2so:
 	@echo compiling \& linking $(P2SBIN)
 	@$(CC) p2s/pie2so.c -o $(P2SBIN)
 
-fook: p2so $(OBJS)
+fook: p2so $(OBJS) $(FOOK)
 	@if [ -z "$${FOOK}" ]; then \
 		printf "\033[1;31mFOOK variable is missing\033[0m\n \033[1mmake help\033[0m to get help\n";\
 		exit 1;\
