@@ -23,20 +23,21 @@ export LDFLAGS
 all: envi fook
 
 envi:
-	@if [ -v ${DEBUG} ]; then \
-		echo -e "\033[1mPROD BUILD\033[0m";\
+	@if [ -n "$${DEBUG}" ]; then \
+		printf "\033[1mDEBUG BUILD\033[0m\n";\
 	else \
-		echo -e "\033[1mDEBUG BUILD\033[0m";\
+		printf "\033[1mPROD BUILD\033[0m\n";\
 	fi;
+
 
 p2so:
 	@echo compiling \& linking $(P2SBIN)
 	@$(CC) p2s/pie2so.c -o $(P2SBIN)
 
-fook: p2so $(OBJS)
-	@if [ -v ${FOOK} ]; then \
-		echo -e "\033[1;31mFOOK variable is missing\033[0m\n \033[1mmake help\033[0m to get help\n";\
-		exit -1;\
+fook: p2so $(OBJS) $(FOOK)
+	@if [ -z "$${FOOK}" ]; then \
+		printf "\033[1;31mFOOK variable is missing\033[0m\n \033[1mmake help\033[0m to get help\n";\
+		exit 1;\
 	fi;
 	@make -C injector/src/linux/ 
 	@$(CC) $(CFLAGS) $(FOOK) -c  -o src/hooks.o
@@ -54,4 +55,4 @@ clean:
 	@rm -f src/*.o $(BIN) $(BIN).so $(P2SBIN)
 
 help:
-	@echo -e "Usage:\n\tmake FOOK=myhooks.c (DEBUG=1)\n\t\n\tDEBUG to set debug flag for /tmp/debug file output\n\tFOOK \033[1mmandatory\033[0m parameter indicating hooks file to use for library\n"
+	@printf "Usage:\n\tmake FOOK=myhooks.c (DEBUG=1)\n\t\n\tDEBUG to set debug flag for /tmp/debug file output\n\tFOOK \033[1mmandatory\033[0m parameter indicating hooks file to use for library\n"
